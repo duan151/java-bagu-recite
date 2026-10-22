@@ -1,0 +1,35 @@
+server:
+  # 8080 常被其他程序占用，这里用 8091
+  port: 8091
+
+spring:
+  application:
+    name: java-bagu
+  # 默认使用 dev；部署到服务器时用 java -jar xxx.jar --spring.profiles.active=prod 覆盖
+  profiles:
+    active: dev
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: Bagu_HikariCP
+      minimum-idle: 5
+      idle-timeout: 180000
+      maximum-pool-size: 15
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.duan.bagu.java.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.duan.bagu.java.mapper: debug

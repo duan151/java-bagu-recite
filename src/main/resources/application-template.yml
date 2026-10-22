@@ -1,0 +1,20 @@
+# ============================================================
+# 配置模板（可安全提交到 GitHub）
+# 使用方法：复制本文件为 application-dev.yml 或 application-prod.yml，
+#          把下面所有 YOUR_XXX 占位符替换成本机/服务器的真实值。
+#          公共配置（端口、连接池、MyBatis）在 application.yml 中，无需重复。
+# ============================================================
+spring:
+  datasource:
+    # 数据库地址：本机可用 127.0.0.1:3306，服务器填实际地址与端口
+    url: jdbc:mysql://YOUR_MYSQL_HOST:YOUR_MYSQL_PORT/java_bagu?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: YOUR_MYSQL_USERNAME
+    password: YOUR_MYSQL_PASSWORD
+  redis:
+    # Redis 地址：本地默认 127.0.0.1:6379，Docker 映射时注意改端口
+    host: YOUR_REDIS_HOST
+    port: YOUR_REDIS_PORT
+    # 无密码时留空即可
+    password: YOUR_REDIS_PASSWORD
+    database: 0
+    timeout: 3000

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duan.bagu.java.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.duan.bagu.java.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+        <result column="role" property="role"/>
+        <result column="status" property="status"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, nickname, avatar, role, status, last_login_time, create_time, update_time
+    </sql>
+
+    <!-- 按主键查询 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        where id = #{id}
+    </select>
+
+    <!-- 按登录账号查询：登录、注册查重 -->
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        where username = #{username}
+    </select>
+
+    <!-- 新增用户，主键回填到实体 id；create_time / update_time 由数据库默认值生成 -->
+    <insert id="insert" parameterType="com.duan.bagu.java.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into `user`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="role != null">role,</if>
+            <if test="status != null">status,</if>
+            <if test="lastLoginTime != null">last_login_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="role != null">#{role},</if>
+            <if test="status != null">#{status},</if>
+            <if test="lastLoginTime != null">#{lastLoginTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 按主键更新，只更新非空字段 -->
+    <update id="updateById" parameterType="com.duan.bagu.java.entity.User">
+        update `user`
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="lastLoginTime != null">last_login_time = #{lastLoginTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 更新最后登录时间 -->
+    <update id="updateLastLoginTime">
+        update `user`
+        set last_login_time = #{lastLoginTime}
+        where id = #{id}
+    </update>
+
+    <!-- 更新状态：0删除 1正常 2拉黑 -->
+    <update id="updateStatus">
+        update `user`
+        set status = #{status}
+        where id = #{id}
+    </update>
+
+</mapper>

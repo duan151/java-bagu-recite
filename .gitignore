@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 本地/生产配置（含账号密码，不提交）###
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
+
+### 日志 ###
+logs/
