@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>题库 - Java 八股</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 20px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+        }
+
+        .navbar .brand {
+            font-size: 17px;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .navbar .actions { display: flex; align-items: center; gap: 10px; }
+
+        .btn {
+            height: 34px;
+            padding: 0 14px;
+            font-size: 13px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: background .2s, color .2s;
+        }
+
+        .btn-primary { color: #fff; background: #4f46e5; }
+        .btn-primary:hover { background: #4338ca; }
+
+        .btn-plain { color: #4b5563; background: #fff; border-color: #d1d5db; }
+        .btn-plain:hover { background: #f9fafb; }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 22px 16px 40px;
+        }
+
+        /* 筛选栏 */
+        .toolbar { margin-bottom: 16px; }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            height: 38px;
+            padding: 0 12px;
+            font-size: 14px;
+            color: #1f2937;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, .15);
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #c7d2fe transparent;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .chips.dragging { cursor: grabbing; }
+
+        .chips::-webkit-scrollbar { height: 4px; }
+        .chips::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 2px; }
+        .chips::-webkit-scrollbar-track { background: transparent; }
+
+        .chip {
+            flex-shrink: 0;
+            height: 30px;
+            padding: 0 13px;
+            font-size: 13px;
+            color: #4b5563;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .chip:hover { border-color: #c7d2fe; color: #4f46e5; }
+
+        .chip.active {
+            color: #fff;
+            background: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .list { display: flex; flex-direction: column; gap: 14px; }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+        }
+
+        .card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-head h3 {
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .ops { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .op {
+            height: 28px;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #4b5563;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .op:hover { background: #eef2ff; color: #4f46e5; border-color: #c7d2fe; }
+        .op.danger:hover { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+        .meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .tag {
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        .tag.cat { color: #4f46e5; background: #eef2ff; }
+        .tag.easy { color: #059669; background: #ecfdf5; }
+        .tag.medium { color: #d97706; background: #fffbeb; }
+        .tag.hard { color: #dc2626; background: #fef2f2; }
+
+        .toggle {
+            margin-top: 12px;
+            padding: 0;
+            font-size: 13px;
+            color: #4f46e5;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .toggle:hover { text-decoration: underline; }
+
+        .answer {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed #e5e7eb;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #374151;
+            word-break: break-word;
+        }
+
+        .answer .desc {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #6b7280;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .answer h1, .answer h2, .answer h3 { margin: 14px 0 8px; font-size: 15px; }
+        .answer p { margin: 8px 0; }
+        .answer ul, .answer ol { margin: 8px 0 8px 22px; }
+        .answer code {
+            padding: 1px 5px;
+            font-size: 13px;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+        .answer pre {
+            margin: 10px 0;
+            padding: 12px;
+            overflow-x: auto;
+            background: #1f2937;
+            border-radius: 8px;
+        }
+        .answer pre code { padding: 0; color: #e5e7eb; background: none; }
+        .answer blockquote {
+            margin: 10px 0;
+            padding: 6px 12px;
+            color: #6b7280;
+            background: #f9fafb;
+            border-left: 3px solid #c7d2fe;
+        }
+
+        .load-status {
+            padding: 22px 0 8px;
+            text-align: center;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        #sentinel { height: 1px; }
+
+        /* 弹窗 */
+        .mask {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(17, 24, 39, .45);
+        }
+
+        .mask.show { display: flex; }
+
+        .modal {
+            width: 100%;
+            max-width: 620px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .modal-head h2 { font-size: 16px; }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            color: #9ca3af;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 20px;
+        }
+
+        .form-item { margin-bottom: 14px; }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .form-item input,
+        .form-item select,
+        .form-item textarea {
+            width: 100%;
+            padding: 9px 11px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1f2937;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-item input:focus,
+        .form-item select:focus,
+        .form-item textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, .15);
+        }
+
+        .form-item textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+        .form-row { display: flex; gap: 12px; }
+        .form-row .form-item { flex: 1; }
+
+        .modal-foot {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 14px 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        /* 提示 */
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translate(-50%, -80px);
+            z-index: 99;
+            padding: 11px 22px;
+            font-size: 14px;
+            color: #fff;
+            background: #10b981;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, .3);
+            opacity: 0;
+            transition: transform .3s, opacity .3s;
+            pointer-events: none;
+        }
+
+        .toast.show { transform: translate(-50%, 0); opacity: 1; }
+        .toast.error { background: #ef4444; box-shadow: 0 8px 20px rgba(239, 68, 68, .3); }
+
+        @media (max-width: 480px) {
+            .navbar { padding: 0 14px; }
+            .container { padding: 16px 12px 32px; }
+            .card { padding: 15px 14px; }
+            .form-row { flex-direction: column; gap: 0; }
+            .ops .op { padding: 0 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a class="brand" href="/">Java 八股</a>
+    <div class="actions">
+        <a class="btn btn-plain" href="/">首页</a>
+        <button class="btn btn-primary" id="addBtn">新增题目</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="toolbar">
+        <div class="search-box">
+            <input id="keyword" type="search" placeholder="搜索题目关键词...">
+        </div>
+        <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="list" id="list"></div>
+    <div class="load-status" id="loadStatus">加载中...</div>
+    <div id="sentinel"></div>
+</div>
+
+<!-- 新增 / 编辑弹窗 -->
+<div class="mask" id="mask">
+    <div class="modal">
+        <div class="modal-head">
+            <h2 id="modalTitle">新增题目</h2>
+            <button class="modal-close" id="closeBtn" type="button">×</button>
+        </div>
+        <form id="questionForm">
+            <div class="modal-body">
+                <input type="hidden" id="questionId">
+                <div class="form-item">
+                    <label for="title">题目 *</label>
+                    <input id="title" name="title" type="text" placeholder="例如：HashMap 的底层结构是什么？">
+                </div>
+                <div class="form-row">
+                    <div class="form-item">
+                        <label for="categoryId">分类</label>
+                        <select id="categoryId" name="categoryId">
+                            <option value="0">未分类</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="difficulty">难度</label>
+                        <select id="difficulty" name="difficulty">
+                            <option value="1">简单</option>
+                            <option value="2" selected>中等</option>
+                            <option value="3">困难</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label for="contentMd">题目补充说明（可选，支持 Markdown）</label>
+                    <textarea id="contentMd" name="contentMd" placeholder="题目背景、场景描述等"></textarea>
+                </div>
+                <div class="form-item">
+                    <label for="answerMd">答案（支持 Markdown）</label>
+                    <textarea id="answerMd" name="answerMd" placeholder="支持 Markdown，如：&#10;- 要点一&#10;- 要点二&#10;&#10;```java&#10;// 代码示例&#10;```"></textarea>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-plain" type="button" id="cancelBtn">取消</button>
+                <button class="btn btn-primary" type="submit" id="saveBtn">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/marked.min.js"></script>
+<script>
+    const state = {
+        lastId: 0,
+        size: 10,
+        loading: false,
+        finished: false,
+        categories: [],
+        categoryId: 0,
+        keyword: ''
+    };
+
+    const listEl = document.getElementById('list');
+    const statusEl = document.getElementById('loadStatus');
+    const sentinel = document.getElementById('sentinel');
+    const mask = document.getElementById('mask');
+    const modalTitle = document.getElementById('modalTitle');
+    const form = document.getElementById('questionForm');
+    const toast = document.getElementById('toast');
+
+    function escapeHtml(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function renderMarkdown(text) {
+        if (!text) return '';
+        // breaks: true —— 普通文本里直接回车也会换行，符合不用 Markdown 时的习惯
+        if (window.marked) return marked.parse(text, { breaks: true, gfm: true });
+        return escapeHtml(text).replace(/\n/g, '<br>');
+    }
+
+    function categoryName(id) {
+        const category = state.categories.find(function (c) { return Number(c.id) === Number(id); });
+        return category ? category.name : '未分类';
+    }
+
+    function difficultyInfo(difficulty) {
+        const map = {
+            1: ['简单', 'easy'],
+            2: ['中等', 'medium'],
+            3: ['困难', 'hard']
+        };
+        return map[difficulty] || map[2];
+    }
+
+    function showToast(text, isError) {
+        toast.textContent = text;
+        toast.className = 'toast show' + (isError ? ' error' : '');
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(function () {
+            toast.classList.remove('show');
+        }, 2000);
+    }
+
+    async function api(url, options) {
+        const resp = await fetch(url, options);
+        const data = await resp.json();
+        if (data.code === '0005') {
+            location.href = '/login';
+            throw new Error('未登录');
+        }
+        return data;
+    }
+
+    function cardElement(question) {
+        const info = difficultyInfo(question.difficulty);
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.dataset.id = question.id;
+        div.innerHTML =
+            '<div class="card-head">' +
+                '<h3>' + escapeHtml(question.title) + '</h3>' +
+                '<div class="ops">' +
+                    '<button class="op" data-act="edit" type="button">编辑</button>' +
+                    '<button class="op danger" data-act="delete" type="button">删除</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="meta">' +
+                '<span class="tag cat">' + escapeHtml(categoryName(question.categoryId)) + '</span>' +
+                '<span class="tag ' + info[1] + '">' + info[0] + '</span>' +
+                '<span class="time">' + (question.createTime || '').replace('T', ' ').slice(0, 16) + '</span>' +
+            '</div>' +
+            '<div class="answer" hidden></div>' +
+            '<button class="toggle" data-act="toggle" type="button">查看答案</button>';
+        return div;
+    }
+
+    async function loadMore() {
+        if (state.loading || state.finished) return;
+        state.loading = true;
+        statusEl.textContent = '加载中...';
+
+        try {
+            let url = '/bagu/list?lastId=' + state.lastId + '&size=' + state.size;
+            if (state.categoryId > 0) url += '&categoryId=' + state.categoryId;
+            if (state.keyword) url += '&keyword=' + encodeURIComponent(state.keyword);
+            const result = await api(url);
+            if (result.code !== '0000') {
+                statusEl.textContent = result.info || '加载失败';
+                return;
+            }
+            const list = result.data || [];
+            if (list.length === 0) {
+                state.finished = true;
+                const hasFilter = state.categoryId > 0 || state.keyword !== '';
+                statusEl.textContent = state.lastId === 0
+                    ? (hasFilter ? '没有符合条件的题目' : '还没有题目，点右上角「新增题目」添加')
+                    : '没有更多了';
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            list.forEach(function (question) {
+                fragment.appendChild(cardElement(question));
+            });
+            listEl.appendChild(fragment);
+
+            state.lastId = list[list.length - 1].id;
+            if (list.length < state.size) {
+                state.finished = true;
+                statusEl.textContent = '没有更多了';
+            } else {
+                statusEl.textContent = '';
+            }
+        } catch (e) {
+            statusEl.textContent = '网络异常，请稍后重试';
+        } finally {
+            state.loading = false;
+        }
+    }
+
+    async function toggleAnswer(card, id, button) {
+        const answerEl = card.querySelector('.answer');
+        if (answerEl.dataset.loaded === '1') {
+            answerEl.hidden = !answerEl.hidden;
+            button.textContent = answerEl.hidden ? '查看答案' : '收起答案';
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = '加载中...';
+        try {
+            const result = await api('/bagu/detail?id=' + id);
+            if (result.code !== '0000') {
+                showToast(result.info || '加载失败', true);
+                button.textContent = '查看答案';
+                return;
+            }
+            const question = result.data;
+            answerEl.innerHTML =
+                (question.contentMd ? '<div class="desc">' + renderMarkdown(question.contentMd) + '</div>' : '') +
+                '<div>' + renderMarkdown(question.answerMd) + '</div>';
+            answerEl.dataset.loaded = '1';
+            answerEl.hidden = false;
+            button.textContent = '收起答案';
+        } catch (e) {
+            button.textContent = '查看答案';
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    async function removeQuestion(id, card) {
+        if (!confirm('确定删除这道题吗？')) return;
+        const body = new URLSearchParams({ id: id });
+        const result = await api('/bagu/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: body
+        });
+        if (result.code === '0000') {
+            card.remove();
+            showToast('删除成功');
+        } else {
+            showToast(result.info || '删除失败', true);
+        }
+    }
+
+    function openModal(title) {
+        modalTitle.textContent = title;
+        mask.classList.add('show');
+    }
+
+    function closeModal() {
+        mask.classList.remove('show');
+        form.reset();
+        document.getElementById('questionId').value = '';
+    }
+
+    function openAdd() {
+        form.reset();
+        document.getElementById('questionId').value = '';
+        document.getElementById('difficulty').value = '2';
+        openModal('新增题目');
+    }
+
+    async function openEdit(id) {
+        const result = await api('/bagu/detail?id=' + id);
+        if (result.code !== '0000') {
+            showToast(result.info || '加载失败', true);
+            return;
+        }
+        const question = result.data;
+        document.getElementById('questionId').value = question.id;
+        document.getElementById('title').value = question.title || '';
+        document.getElementById('categoryId').value = String(question.categoryId || 0);
+        document.getElementById('difficulty').value = String(question.difficulty || 2);
+        document.getElementById('contentMd').value = question.contentMd || '';
+        document.getElementById('answerMd').value = question.answerMd || '';
+        openModal('编辑题目');
+    }
+
+    async function loadCategories() {
+        const result = await api('/bagu/categories');
+        if (result.code !== '0000') return;
+        state.categories = result.data || [];
+        const select = document.getElementById('categoryId');
+        select.innerHTML = '<option value="0">未分类</option>' +
+            state.categories.map(function (category) {
+                return '<option value="' + category.id + '">' + escapeHtml(category.name) + '</option>';
+            }).join('');
+        renderChips();
+    }
+
+    function renderChips() {
+        const chips = document.getElementById('chips');
+        chips.innerHTML = '';
+
+        const all = document.createElement('button');
+        all.type = 'button';
+        all.className = 'chip' + (state.categoryId === 0 ? ' active' : '');
+        all.textContent = '全部';
+        all.addEventListener('click', function () { selectCategory(0); });
+        chips.appendChild(all);
+
+        state.categories.forEach(function (category) {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'chip' + (Number(state.categoryId) === Number(category.id) ? ' active' : '');
+            chip.textContent = category.name;
+            chip.addEventListener('click', function () { selectCategory(Number(category.id)); });
+            chips.appendChild(chip);
+        });
+    }
+
+    function selectCategory(categoryId) {
+        state.categoryId = categoryId;
+        renderChips();
+        resetList();
+    }
+
+    function resetList() {
+        state.lastId = 0;
+        state.finished = false;
+        state.loading = false;
+        listEl.innerHTML = '';
+        statusEl.textContent = '加载中...';
+        loadMore();
+    }
+
+    listEl.addEventListener('click', function (event) {
+        const button = event.target.closest('button');
+        if (!button) return;
+        const card = event.target.closest('.card');
+        if (!card) return;
+        const id = card.dataset.id;
+
+        if (button.dataset.act === 'toggle') toggleAnswer(card, id, button);
+        if (button.dataset.act === 'edit') openEdit(id);
+        if (button.dataset.act === 'delete') removeQuestion(id, card);
+    });
+
+    document.getElementById('addBtn').addEventListener('click', openAdd);
+    document.getElementById('closeBtn').addEventListener('click', closeModal);
+    document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+    // 搜索框防抖：输入停止 300ms 后查询
+    const keywordInput = document.getElementById('keyword');
+    let searchTimer = null;
+    keywordInput.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+            const value = keywordInput.value.trim();
+            if (value === state.keyword) return;
+            state.keyword = value;
+            resetList();
+        }, 300);
+    });
+
+    // 分类栏：桌面端支持鼠标滚轮左右滑动 + 按住拖动
+    const chipsEl = document.getElementById('chips');
+    let chipsDragging = false;
+    let chipsMoved = false;
+    let chipsStartX = 0;
+    let chipsStartScroll = 0;
+
+    chipsEl.addEventListener('wheel', function (event) {
+        if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+            chipsEl.scrollLeft += event.deltaY;
+            event.preventDefault();
+        }
+    }, { passive: false });
+
+    chipsEl.addEventListener('mousedown', function (event) {
+        if (event.button !== 0) return;
+        chipsDragging = true;
+        chipsMoved = false;
+        chipsStartX = event.pageX;
+        chipsStartScroll = chipsEl.scrollLeft;
+        chipsEl.classList.add('dragging');
+    });
+
+    window.addEventListener('mousemove', function (event) {
+        if (!chipsDragging) return;
+        const distance = event.pageX - chipsStartX;
+        if (Math.abs(distance) > 5) chipsMoved = true;
+        chipsEl.scrollLeft = chipsStartScroll - distance;
+    });
+
+    window.addEventListener('mouseup', function () {
+        chipsDragging = false;
+        chipsEl.classList.remove('dragging');
+    });
+
+    // 拖动后松手不要误触分类切换
+    chipsEl.addEventListener('click', function (event) {
+        if (chipsMoved) {
+            event.stopPropagation();
+            event.preventDefault();
+            chipsMoved = false;
+        }
+    }, true);
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('questionId').value;
+        const title = document.getElementById('title').value.trim();
+        if (!title) {
+            showToast('题目不能为空', true);
+            return;
+        }
+        const isEdit = !!id;
+        const body = new URLSearchParams({
+            title: title,
+            categoryId: document.getElementById('categoryId').value || '0',
+            difficulty: document.getElementById('difficulty').value || '2',
+            contentMd: document.getElementById('contentMd').value,
+            answerMd: document.getElementById('answerMd').value
+        });
+        if (isEdit) body.append('id', id);
+
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = '保存中...';
+        try {
+            const result = await api(isEdit ? '/bagu/update' : '/bagu/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body
+            });
+            if (result.code === '0000') {
+                closeModal();
+                showToast(isEdit ? '修改成功' : '新增成功');
+                resetList();
+            } else {
+                showToast(result.info || '保存失败', true);
+            }
+        } catch (e) {
+            showToast('网络异常，请稍后重试', true);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '保存';
+        }
+    });
+
+    new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) loadMore();
+    }, { rootMargin: '200px' }).observe(sentinel);
+
+    (async function init() {
+        await loadCategories();
+        await loadMore();
+    })();
+</script>
+
+</body>
+</html>

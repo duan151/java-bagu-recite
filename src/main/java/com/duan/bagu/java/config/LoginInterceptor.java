@@ -47,11 +47,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.sendRedirect("/login");
         } else {
             response.setContentType("application/json;charset=UTF-8");
-            Result<Object> result = Result.builder()
-                    .code(ResultEnum.NOT_LOGIN.getCode())
-                    .info(ResultEnum.NOT_LOGIN.getInfo())
-                    .build();
-            response.getWriter().write(objectMapper.writeValueAsString(result));
+            response.getWriter().write(objectMapper.writeValueAsString(Result.fail(ResultEnum.NOT_LOGIN)));
         }
         return false;
     }

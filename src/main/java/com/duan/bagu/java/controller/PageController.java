@@ -24,4 +24,12 @@ public class PageController {
     public String login() {
         return "login";
     }
+
+    /**
+     * 题库页
+     */
+    @GetMapping("/bagu")
+    public String bagu() {
+        return "bagu";
+    }
 }

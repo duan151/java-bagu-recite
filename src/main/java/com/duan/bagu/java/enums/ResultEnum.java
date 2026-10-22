@@ -21,7 +21,9 @@ public enum ResultEnum {
     /** 账号已被禁用 */
     ACCOUNT_DISABLED("0004", "账号已被禁用"),
     /** 未登录或登录已过期 */
-    NOT_LOGIN("0005", "未登录或登录已过期");
+    NOT_LOGIN("0005", "未登录或登录已过期"),
+    /** 数据不存在 */
+    DATA_NOT_FOUND("0006", "数据不存在");
 
     /** 状态码 */
     private final String code;

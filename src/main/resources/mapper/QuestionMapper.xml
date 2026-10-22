@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duan.bagu.java.mapper.QuestionMapper">
+
+    <resultMap id="QuestionResultMap" type="com.duan.bagu.java.entity.Question">
+        <id column="id" property="id"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="title" property="title"/>
+        <result column="content_md" property="contentMd"/>
+        <result column="answer_md" property="answerMd"/>
+        <result column="difficulty" property="difficulty"/>
+        <result column="starred" property="starred"/>
+        <result column="mastered" property="mastered"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="CategoryResultMap" type="com.duan.bagu.java.entity.Category">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+
+    <!-- 滚动加载：只查列表需要的字段，不查答案大字段 -->
+    <select id="selectList" resultMap="QuestionResultMap">
+        select id, category_id, title, difficulty, starred, mastered, create_time, update_time
+        from question
+        <where>
+            <if test="lastId != null and lastId > 0">
+                and id &lt; #{lastId}
+            </if>
+            <if test="categoryId != null and categoryId > 0">
+                and category_id = #{categoryId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and title like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by id desc
+        limit #{size}
+    </select>
+
+    <!-- 详情：查完整内容（含答案） -->
+    <select id="selectById" resultMap="QuestionResultMap">
+        select id, category_id, title, content_md, answer_md, difficulty, starred, mastered, create_time, update_time
+        from question
+        where id = #{id}
+    </select>
+
+    <select id="selectCategories" resultMap="CategoryResultMap">
+        select id, name, sort
+        from category
+        order by sort, id
+    </select>
+
+    <!-- 新增，主键回填；create_time / update_time 由数据库默认值生成 -->
+    <insert id="insert" parameterType="com.duan.bagu.java.dto.QuestionDto" useGeneratedKeys="true" keyProperty="id">
+        insert into question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">category_id,</if>
+            <if test="title != null">title,</if>
+            <if test="contentMd != null">content_md,</if>
+            <if test="answerMd != null">answer_md,</if>
+            <if test="difficulty != null">difficulty,</if>
+            <if test="starred != null">starred,</if>
+            <if test="mastered != null">mastered,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="contentMd != null">#{contentMd},</if>
+            <if test="answerMd != null">#{answerMd},</if>
+            <if test="difficulty != null">#{difficulty},</if>
+            <if test="starred != null">#{starred},</if>
+            <if test="mastered != null">#{mastered},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改，只更新非空字段 -->
+    <update id="update" parameterType="com.duan.bagu.java.dto.QuestionDto">
+        update question
+        <set>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="contentMd != null">content_md = #{contentMd},</if>
+            <if test="answerMd != null">answer_md = #{answerMd},</if>
+            <if test="difficulty != null">difficulty = #{difficulty},</if>
+            <if test="starred != null">starred = #{starred},</if>
+            <if test="mastered != null">mastered = #{mastered},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from question
+        where id = #{id}
+    </delete>
+
+</mapper>

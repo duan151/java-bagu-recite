@@ -19,7 +19,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 // 需要登录才能访问的路径
-                .addPathPatterns("/", "/index", "/api/**")
+                .addPathPatterns("/", "/index", "/bagu", "/bagu/**", "/api/**")
                 // 登录页、登录接口、错误页放行
                 .excludePathPatterns("/login", "/login/**", "/error");
     }
