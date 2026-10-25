@@ -1,6 +1,7 @@
 package com.duan.bagu.java.controller;
 
 import com.duan.bagu.java.Service.UserService;
+import com.duan.bagu.java.common.PasswordUtil;
 import com.duan.bagu.java.common.Result;
 import com.duan.bagu.java.common.TokenUtils;
 import com.duan.bagu.java.entity.User;
@@ -30,15 +31,20 @@ public class LoginController {
             return Result.fail(ResultEnum.PARAM_INVALID);
         }
 
-        // 用户名和密码校对
+        // 用户名和密码校对（BCrypt）
         User user = userService.getUser(username);
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !PasswordUtil.matches(password, user.getPassword())) {
             return Result.fail(ResultEnum.LOGIN_FAILED);
         }
 
         // 状态：0删除 1正常 2拉黑
         if (user.getStatus() == null || user.getStatus() != 1) {
             return Result.fail(ResultEnum.ACCOUNT_DISABLED);
+        }
+
+        // 历史明文密码：登录成功后自动升级为 BCrypt
+        if (!PasswordUtil.isBcrypt(user.getPassword())) {
+            userService.updatePassword(user.getId(), PasswordUtil.encode(password));
         }
 
         // 校验通过，生成 token 存入 Redis，返回给前端

@@ -1,8 +1,10 @@
 package com.duan.bagu.java.config;
 
+import com.duan.bagu.java.Service.UserService;
 import com.duan.bagu.java.common.Result;
 import com.duan.bagu.java.common.TokenUtils;
 import com.duan.bagu.java.common.UserContext;
+import com.duan.bagu.java.entity.User;
 import com.duan.bagu.java.enums.ResultEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +27,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     private StringRedisTemplate stringRedisTemplate;
 
     @Resource
+    private UserService userService;
+
+    @Resource
     private ObjectMapper objectMapper;
 
     @Override
@@ -36,9 +41,12 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (token != null) {
             String userId = stringRedisTemplate.opsForValue().get(LOGIN_TOKEN_KEY_PREFIX + token);
             if (userId != null) {
-                // 把当前用户 id 放到 ThreadLocal 里，后续 Controller / Service 可直接取
-                UserContext.setUserId(Long.valueOf(userId));
-                return true;
+                // 查出完整用户信息放进 ThreadLocal，后续 Controller / Service 直接取
+                User user = userService.getUserById(Long.valueOf(userId));
+                if (user != null) {
+                    UserContext.setUser(user);
+                    return true;
+                }
             }
         }
 

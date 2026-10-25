@@ -35,6 +35,12 @@
             <if test="keyword != null and keyword != ''">
                 and title like concat('%', #{keyword}, '%')
             </if>
+            <if test="starred != null and starred == 1">
+                and starred = 1
+            </if>
+            <if test="mastered != null and mastered == 1">
+                and mastered = 1
+            </if>
         </where>
         order by id desc
         limit #{size}
@@ -95,5 +101,72 @@
         delete from question
         where id = #{id}
     </delete>
+
+    <!-- 随机抽题公共条件 -->
+    <sql id="Random_Where">
+        <where>
+            <if test="difficulty != null and difficulty > 0">
+                and difficulty = #{difficulty}
+            </if>
+            <if test="categoryIds != null and categoryIds.size() > 0">
+                and category_id in
+                <foreach collection="categoryIds" item="cid" open="(" separator="," close=")">#{cid}</foreach>
+            </if>
+            <if test="starred != null and starred == 1">
+                and starred = 1
+            </if>
+            <if test="starred != null and starred == -1">
+                and starred = 0
+            </if>
+            <if test="mastered != null and mastered == 1">
+                and mastered = 1
+            </if>
+            <if test="mastered != null and mastered == -1">
+                and mastered = 0
+            </if>
+        </where>
+    </sql>
+
+    <!-- 抽题弹窗：各分类题目数量（按难度/收藏/掌握过滤） -->
+    <select id="countByCategory" resultType="com.duan.bagu.java.dto.CategoryOptionDto">
+        select q.category_id as id,
+               coalesce(c.name, '未分类') as name,
+               count(*) as `count`
+        from question q
+        left join category c on q.category_id = c.id
+        <where>
+            <if test="difficulty != null and difficulty > 0">
+                and q.difficulty = #{difficulty}
+            </if>
+            <if test="starred != null and starred == 1">
+                and q.starred = 1
+            </if>
+            <if test="starred != null and starred == -1">
+                and q.starred = 0
+            </if>
+            <if test="mastered != null and mastered == 1">
+                and q.mastered = 1
+            </if>
+            <if test="mastered != null and mastered == -1">
+                and q.mastered = 0
+            </if>
+        </where>
+        group by q.category_id, c.name, c.sort
+        order by c.sort is null, c.sort, q.category_id
+    </select>
+
+    <select id="countRandom" resultType="long">
+        select count(*)
+        from question
+        <include refid="Random_Where"/>
+    </select>
+
+    <select id="selectRandom" resultMap="QuestionResultMap">
+        select id, category_id, title, content_md, answer_md, difficulty, starred, mastered, create_time, update_time
+        from question
+        <include refid="Random_Where"/>
+        order by id
+        limit #{offset}, 1
+    </select>
 
 </mapper>

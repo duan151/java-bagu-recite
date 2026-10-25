@@ -1,6 +1,7 @@
 package com.duan.bagu.java.Service.Impl;
 
 import com.duan.bagu.java.Service.QuestionService;
+import com.duan.bagu.java.dto.CategoryOptionDto;
 import com.duan.bagu.java.dto.QuestionDto;
 import com.duan.bagu.java.entity.Category;
 import com.duan.bagu.java.entity.Question;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -20,11 +22,12 @@ public class QuestionServiceImpl implements QuestionService {
     private QuestionMapper questionMapper;
 
     @Override
-    public List<Question> list(Long lastId, Integer size, Long categoryId, String keyword) {
+    public List<Question> list(Long lastId, Integer size, Long categoryId, String keyword,
+                               Integer starred, Integer mastered) {
         long cursor = lastId == null ? 0L : lastId;
         int limit = size == null || size <= 0 ? 10 : Math.min(size, MAX_SIZE);
         String searchKeyword = keyword == null ? null : keyword.trim();
-        return questionMapper.selectList(cursor, limit, categoryId, searchKeyword);
+        return questionMapper.selectList(cursor, limit, categoryId, searchKeyword, starred, mastered);
     }
 
     @Override
@@ -64,5 +67,21 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void delete(Long id) {
         questionMapper.deleteById(id);
+    }
+
+    @Override
+    public List<CategoryOptionDto> randomOptions(Integer difficulty, Integer starred, Integer mastered) {
+        return questionMapper.countByCategory(difficulty, starred, mastered);
+    }
+
+    @Override
+    public Question random(Integer difficulty, List<Long> categoryIds, Integer starred, Integer mastered) {
+        long total = questionMapper.countRandom(difficulty, categoryIds, starred, mastered);
+        if (total <= 0) {
+            return null;
+        }
+        // 先统计总数，再随机一个偏移量取一条，避免 order by rand() 的全表排序
+        long offset = ThreadLocalRandom.current().nextLong(total);
+        return questionMapper.selectRandom(difficulty, categoryIds, starred, mastered, offset);
     }
 }

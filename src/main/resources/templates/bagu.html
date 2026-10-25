@@ -55,6 +55,59 @@
         .btn-plain { color: #4b5563; background: #fff; border-color: #d1d5db; }
         .btn-plain:hover { background: #f9fafb; }
 
+        /* 右上角设置下拉 */
+        .dropdown { position: relative; }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+
+        .icon-btn:hover { color: #4f46e5; background: #f9fafb; }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 132px;
+            padding: 6px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            display: none;
+            z-index: 20;
+        }
+
+        .dropdown:hover .dropdown-menu,
+        .dropdown.open .dropdown-menu { display: block; }
+
+        .dropdown-menu a,
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 13px;
+            text-align: left;
+            color: #374151;
+            background: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu button:hover { background: #f3f4f6; color: #4f46e5; }
+
         .container {
             max-width: 860px;
             margin: 0 auto;
@@ -126,6 +179,130 @@
             border-color: #4f46e5;
         }
 
+        .btn-random {
+            flex-shrink: 0;
+            height: 38px;
+            padding: 0 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+
+        .btn-random:hover { opacity: .9; }
+
+        /* 抽题弹窗 */
+        .random-modal { max-width: 560px; }
+
+        .section-title {
+            margin: 16px 0 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .section-title:first-child { margin-top: 0; }
+
+        .seg { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .seg-item {
+            height: 30px;
+            padding: 0 14px;
+            font-size: 13px;
+            color: #4b5563;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .seg-item:hover { border-color: #c7d2fe; color: #4f46e5; }
+        .seg-item.active { color: #fff; background: #4f46e5; border-color: #4f46e5; }
+
+        .type-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+
+        .type-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            color: #4b5563;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .type-item input { accent-color: #4f46e5; }
+        .type-item:hover { border-color: #c7d2fe; }
+
+        .type-count {
+            padding: 0 6px;
+            font-size: 11px;
+            color: #6b7280;
+            background: #f3f4f6;
+            border-radius: 999px;
+        }
+
+        .random-result h3 {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+
+        .random-result .meta { margin-bottom: 12px; }
+
+        .random-answer {
+            padding-top: 12px;
+            border-top: 1px dashed #e5e7eb;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #374151;
+            word-break: break-word;
+        }
+
+        .random-answer .desc {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #6b7280;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .random-answer h1, .random-answer h2, .random-answer h3 { margin: 14px 0 8px; font-size: 15px; }
+        .random-answer p { margin: 8px 0; }
+        .random-answer ul, .random-answer ol { margin: 8px 0 8px 22px; }
+        .random-answer code {
+            padding: 1px 5px;
+            font-size: 13px;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+        .random-answer pre {
+            margin: 10px 0;
+            padding: 12px;
+            overflow-x: auto;
+            background: #1f2937;
+            border-radius: 8px;
+        }
+        .random-answer pre code { padding: 0; color: #e5e7eb; background: none; }
+
         .list { display: flex; flex-direction: column; gap: 14px; }
 
         .card {
@@ -142,12 +319,54 @@
             gap: 12px;
         }
 
+        .head-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            min-width: 0;
+        }
+
         .card-head h3 {
             font-size: 16px;
             line-height: 1.5;
             font-weight: 600;
             word-break: break-word;
         }
+
+        .star {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            margin-top: -3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d1d5db;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: color .2s, background .2s;
+        }
+
+        .star:hover { color: #f59e0b; background: #fffbeb; }
+        .star.on { color: #f59e0b; }
+        .star.on svg { fill: currentColor; }
+
+        .mastery {
+            height: 22px;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #6b7280;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: color .2s, background .2s, border-color .2s;
+        }
+
+        .mastery:hover { color: #059669; background: #ecfdf5; border-color: #a7f3d0; }
+        .mastery.on { color: #059669; background: #ecfdf5; border-color: #a7f3d0; }
 
         .ops { display: flex; gap: 6px; flex-shrink: 0; }
 
@@ -198,6 +417,65 @@
         }
 
         .toggle:hover { text-decoration: underline; }
+
+        .card-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .card-foot .toggle { margin-top: 0; }
+
+        /* 筛选勾选框：文字 + 方形框 */
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .check {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #4b5563;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .check input {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+
+        .check .box {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .check:hover .box { border-color: #a5b4fc; }
+
+        .check input:checked + .box {
+            background: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .check input:checked + .box::after { content: '✓'; line-height: 1; }
 
         .answer {
             margin-top: 14px;
@@ -382,6 +660,20 @@
     <div class="actions">
         <a class="btn btn-plain" href="/">首页</a>
         <button class="btn btn-primary" id="addBtn">新增题目</button>
+        <div class="dropdown" id="settingsDropdown">
+            <button class="icon-btn" id="settingsBtn" type="button" title="设置" aria-label="设置">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+            <div class="dropdown-menu">
+                <a href="/bagu?starred=1">我的收藏</a>
+                <a href="/profile">个人中心</a>
+                <button type="button" id="logoutBtn">退出登录</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -389,8 +681,21 @@
     <div class="toolbar">
         <div class="search-box">
             <input id="keyword" type="search" placeholder="搜索题目关键词...">
+            <button class="btn-random" id="randomBtn" type="button" style="display:none;">随机抽题</button>
         </div>
         <div class="chips" id="chips"></div>
+        <div class="filters">
+            <label class="check" id="starredFilterWrap">
+                已收藏
+                <input type="checkbox" id="filterStarred">
+                <span class="box"></span>
+            </label>
+            <label class="check">
+                已掌握
+                <input type="checkbox" id="filterMastered">
+                <span class="box"></span>
+            </label>
+        </div>
     </div>
 
     <div class="list" id="list"></div>
@@ -445,6 +750,59 @@
     </div>
 </div>
 
+<!-- 随机抽题弹窗 -->
+<div class="mask" id="randomMask">
+    <div class="modal random-modal">
+        <div class="modal-head">
+            <h2>随机抽题</h2>
+            <button class="modal-close" id="randomCloseBtn" type="button">×</button>
+        </div>
+        <div class="modal-body">
+            <!-- 条件视图 -->
+            <div id="randomCondition">
+                <div class="section-title">难度</div>
+                <div class="seg" id="difficultySeg">
+                    <button class="seg-item active" data-value="0" type="button">全部</button>
+                    <button class="seg-item" data-value="1" type="button">简单</button>
+                    <button class="seg-item" data-value="2" type="button">中等</button>
+                    <button class="seg-item" data-value="3" type="button">困难</button>
+                </div>
+
+                <div class="section-title">类型（可多选，不选表示全部）</div>
+                <div class="type-list" id="typeList"></div>
+
+                <div class="section-title">掌握状态</div>
+                <div class="seg" id="masteredSeg">
+                    <button class="seg-item active" data-value="0" type="button">全部</button>
+                    <button class="seg-item" data-value="1" type="button">已掌握</button>
+                    <button class="seg-item" data-value="-1" type="button">未掌握</button>
+                </div>
+
+                <div id="starredSegWrap">
+                    <div class="section-title">收藏状态</div>
+                    <div class="seg" id="starredSeg">
+                        <button class="seg-item active" data-value="0" type="button">全部</button>
+                        <button class="seg-item" data-value="1" type="button">已收藏</button>
+                        <button class="seg-item" data-value="-1" type="button">未收藏</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 抽题结果 -->
+            <div id="randomResult" class="random-result" hidden>
+                <h3 id="randomTitle"></h3>
+                <div class="meta" id="randomMeta"></div>
+                <div class="random-answer" id="randomAnswer"></div>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-plain" id="randomBackBtn" type="button" style="display:none;">修改条件</button>
+            <button class="btn btn-plain" id="randomAgainBtn" type="button" style="display:none;">再抽一题</button>
+            <button class="btn btn-primary" id="randomDrawBtn" type="button">开始抽题</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="/js/marked.min.js"></script>
@@ -456,8 +814,25 @@
         finished: false,
         categories: [],
         categoryId: 0,
-        keyword: ''
+        keyword: '',
+        starred: 0,
+        mastered: 0
     };
+
+    // 支持 /bagu?starred=1（我的收藏）、?mastered=1 等初始筛选
+    (function initFiltersFromUrl() {
+        const params = new URLSearchParams(location.search);
+        state.categoryId = Number(params.get('categoryId')) || 0;
+        state.keyword = params.get('keyword') || '';
+        state.starred = params.get('starred') === '1' ? 1 : 0;
+        state.mastered = params.get('mastered') === '1' ? 1 : 0;
+        if (state.starred === 1) {
+            document.title = '我的收藏 - Java 八股';
+        }
+    })();
+
+    // 收藏页的随机抽题只能抽已收藏的题
+    const isFavoritesPage = state.starred === 1;
 
     const listEl = document.getElementById('list');
     const statusEl = document.getElementById('loadStatus');
@@ -515,14 +890,25 @@
         return data;
     }
 
+    const STAR_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.6l2.47 5.01 5.53.8-4 3.9.94 5.5L12 16.2l-4.94 2.6.94-5.5-4-3.9 5.53-.8z"/></svg>';
+
     function cardElement(question) {
         const info = difficultyInfo(question.difficulty);
+        const starred = Number(question.starred) === 1;
+        const mastered = Number(question.mastered) === 1;
         const div = document.createElement('div');
         div.className = 'card';
         div.dataset.id = question.id;
         div.innerHTML =
             '<div class="card-head">' +
-                '<h3>' + escapeHtml(question.title) + '</h3>' +
+                '<div class="head-left">' +
+                    '<button class="star' + (starred ? ' on' : '') + '" data-act="star" type="button" ' +
+                        'title="' + (starred ? '取消收藏' : '收藏') + '" aria-label="' + (starred ? '取消收藏' : '收藏') + '">' +
+                        STAR_SVG +
+                    '</button>' +
+                    '<h3>' + escapeHtml(question.title) + '</h3>' +
+                '</div>' +
                 '<div class="ops">' +
                     '<button class="op" data-act="edit" type="button">编辑</button>' +
                     '<button class="op danger" data-act="delete" type="button">删除</button>' +
@@ -534,7 +920,12 @@
                 '<span class="time">' + (question.createTime || '').replace('T', ' ').slice(0, 16) + '</span>' +
             '</div>' +
             '<div class="answer" hidden></div>' +
-            '<button class="toggle" data-act="toggle" type="button">查看答案</button>';
+            '<div class="card-foot">' +
+                '<button class="toggle" data-act="toggle" type="button">查看答案</button>' +
+                '<button class="mastery' + (mastered ? ' on' : '') + '" data-act="mastery" type="button">' +
+                    (mastered ? '已掌握' : '标记掌握') +
+                '</button>' +
+            '</div>';
         return div;
     }
 
@@ -547,6 +938,8 @@
             let url = '/bagu/list?lastId=' + state.lastId + '&size=' + state.size;
             if (state.categoryId > 0) url += '&categoryId=' + state.categoryId;
             if (state.keyword) url += '&keyword=' + encodeURIComponent(state.keyword);
+            if (state.starred === 1) url += '&starred=1';
+            if (state.mastered === 1) url += '&mastered=1';
             const result = await api(url);
             if (result.code !== '0000') {
                 statusEl.textContent = result.info || '加载失败';
@@ -555,10 +948,19 @@
             const list = result.data || [];
             if (list.length === 0) {
                 state.finished = true;
-                const hasFilter = state.categoryId > 0 || state.keyword !== '';
-                statusEl.textContent = state.lastId === 0
-                    ? (hasFilter ? '没有符合条件的题目' : '还没有题目，点右上角「新增题目」添加')
-                    : '没有更多了';
+                const hasFilter = state.categoryId > 0 || state.keyword !== ''
+                    || state.starred === 1 || state.mastered === 1;
+                let emptyText = '还没有题目，点右上角「新增题目」添加';
+                if (state.starred === 1 && state.mastered === 1) {
+                    emptyText = '没有已掌握的收藏题目';
+                } else if (state.starred === 1) {
+                    emptyText = '还没有收藏的题目，点题目左侧的星标即可收藏';
+                } else if (state.mastered === 1) {
+                    emptyText = '还没有标记为已掌握的题目';
+                } else if (hasFilter) {
+                    emptyText = '没有符合条件的题目';
+                }
+                statusEl.textContent = state.lastId === 0 ? emptyText : '没有更多了';
                 return;
             }
 
@@ -627,6 +1029,54 @@
         } else {
             showToast(result.info || '删除失败', true);
         }
+    }
+
+    function setStarState(button, on) {
+        button.classList.toggle('on', on);
+        const text = on ? '取消收藏' : '收藏';
+        button.title = text;
+        button.setAttribute('aria-label', text);
+    }
+
+    function setMasteryState(button, on) {
+        button.classList.toggle('on', on);
+        button.textContent = on ? '已掌握' : '标记掌握';
+    }
+
+    async function markQuestion(id, field, value, rollback) {
+        try {
+            const body = new URLSearchParams({ id: id });
+            body.append(field, String(value));
+            const result = await api('/bagu/mark', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: body
+            });
+            if (result.code !== '0000') {
+                rollback();
+                showToast(result.info || '操作失败', true);
+            }
+        } catch (e) {
+            rollback();
+            showToast('网络异常，请稍后重试', true);
+        }
+    }
+
+    function toggleStar(id, button) {
+        // 先改界面再发请求，失败时回滚
+        const next = button.classList.contains('on') ? 0 : 1;
+        setStarState(button, next === 1);
+        markQuestion(id, 'starred', next, function () {
+            setStarState(button, next !== 1);
+        });
+    }
+
+    function toggleMastery(id, button) {
+        const next = button.classList.contains('on') ? 0 : 1;
+        setMasteryState(button, next === 1);
+        markQuestion(id, 'mastered', next, function () {
+            setMasteryState(button, next !== 1);
+        });
     }
 
     function openModal(title) {
@@ -702,7 +1152,18 @@
         resetList();
     }
 
+    function syncUrl() {
+        const params = new URLSearchParams();
+        if (state.categoryId > 0) params.set('categoryId', state.categoryId);
+        if (state.keyword) params.set('keyword', state.keyword);
+        if (state.starred === 1) params.set('starred', '1');
+        if (state.mastered === 1) params.set('mastered', '1');
+        const query = params.toString();
+        history.replaceState(null, '', location.pathname + (query ? '?' + query : ''));
+    }
+
     function resetList() {
+        syncUrl();
         state.lastId = 0;
         state.finished = false;
         state.loading = false;
@@ -719,6 +1180,8 @@
         const id = card.dataset.id;
 
         if (button.dataset.act === 'toggle') toggleAnswer(card, id, button);
+        if (button.dataset.act === 'star') toggleStar(id, button);
+        if (button.dataset.act === 'mastery') toggleMastery(id, button);
         if (button.dataset.act === 'edit') openEdit(id);
         if (button.dataset.act === 'delete') removeQuestion(id, card);
     });
@@ -726,6 +1189,27 @@
     document.getElementById('addBtn').addEventListener('click', openAdd);
     document.getElementById('closeBtn').addEventListener('click', closeModal);
     document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+    // 右上角设置：悬停显示，点击也可以切换（兼容触屏）
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    document.getElementById('settingsBtn').addEventListener('click', function (event) {
+        event.stopPropagation();
+        settingsDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function () {
+        settingsDropdown.classList.remove('open');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async function () {
+        try {
+            await fetch('/login/logout', { method: 'POST' });
+        } catch (e) {
+            // ignore
+        }
+        localStorage.removeItem('token');
+        document.cookie = 'token=; path=/; max-age=0';
+        location.href = '/login';
+    });
 
     // 搜索框防抖：输入停止 300ms 后查询
     const keywordInput = document.getElementById('keyword');
@@ -784,6 +1268,18 @@
         }
     }, true);
 
+    // 筛选：已收藏 / 已掌握
+    document.getElementById('filterStarred').addEventListener('change', function (event) {
+        state.starred = event.target.checked ? 1 : 0;
+        document.title = state.starred === 1 ? '我的收藏 - Java 八股' : '题库 - Java 八股';
+        resetList();
+    });
+
+    document.getElementById('filterMastered').addEventListener('change', function (event) {
+        state.mastered = event.target.checked ? 1 : 0;
+        resetList();
+    });
+
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
         const id = document.getElementById('questionId').value;
@@ -830,7 +1326,192 @@
         if (entries[0].isIntersecting) loadMore();
     }, { rootMargin: '200px' }).observe(sentinel);
 
+    // ===== 随机抽题 =====
+    const randomState = {
+        difficulty: 0,
+        mastered: 0,
+        starred: 0,
+        categoryIds: new Set(),
+        options: []
+    };
+
+    const randomMask = document.getElementById('randomMask');
+    const typeListEl = document.getElementById('typeList');
+
+    function openRandom() {
+        // 收藏页：固定只从已收藏的题里抽，隐藏「收藏状态」选择
+        if (isFavoritesPage) {
+            randomState.starred = 1;
+            document.getElementById('starredSegWrap').hidden = true;
+        }
+        randomMask.classList.add('show');
+        showRandomCondition();
+        loadRandomOptions();
+    }
+
+    function closeRandom() {
+        randomMask.classList.remove('show');
+    }
+
+    function showRandomCondition() {
+        document.getElementById('randomCondition').hidden = false;
+        document.getElementById('randomResult').hidden = true;
+        document.getElementById('randomDrawBtn').style.display = '';
+        document.getElementById('randomAgainBtn').style.display = 'none';
+        document.getElementById('randomBackBtn').style.display = 'none';
+    }
+
+    async function loadRandomOptions() {
+        const params = new URLSearchParams({
+            difficulty: String(randomState.difficulty),
+            mastered: String(randomState.mastered),
+            starred: String(randomState.starred)
+        });
+        try {
+            const result = await api('/bagu/random/options?' + params.toString());
+            if (result.code !== '0000') {
+                showToast(result.info || '加载失败', true);
+                return;
+            }
+            randomState.options = result.data || [];
+            // 去掉已经不在当前结果里的分类选择
+            const ids = new Set(randomState.options.map(function (option) { return Number(option.id); }));
+            Array.from(randomState.categoryIds).forEach(function (id) {
+                if (!ids.has(id)) randomState.categoryIds.delete(id);
+            });
+            renderTypeList();
+            updateDrawButton();
+        } catch (e) {
+            showToast('网络异常，请稍后重试', true);
+        }
+    }
+
+    function renderTypeList() {
+        if (randomState.options.length === 0) {
+            typeListEl.innerHTML = '<span style="font-size:13px;color:#9ca3af;">当前条件下没有题目</span>';
+            return;
+        }
+        typeListEl.innerHTML = randomState.options.map(function (option) {
+            const checked = randomState.categoryIds.has(Number(option.id)) ? ' checked' : '';
+            return '<label class="type-item">' +
+                '<input type="checkbox" value="' + option.id + '"' + checked + '>' +
+                '<span>' + escapeHtml(option.name) + '</span>' +
+                '<span class="type-count">' + option.count + '</span>' +
+                '</label>';
+        }).join('');
+    }
+
+    function updateDrawButton() {
+        let total = 0;
+        randomState.options.forEach(function (option) {
+            if (randomState.categoryIds.size === 0 || randomState.categoryIds.has(Number(option.id))) {
+                total += Number(option.count);
+            }
+        });
+        const button = document.getElementById('randomDrawBtn');
+        button.textContent = total > 0 ? '开始抽题（共 ' + total + ' 题）' : '没有符合条件的题目';
+        button.disabled = total === 0;
+    }
+
+    async function drawRandom() {
+        const drawButton = document.getElementById('randomDrawBtn');
+        drawButton.disabled = true;
+        drawButton.textContent = '抽题中...';
+
+        const params = new URLSearchParams({
+            difficulty: String(randomState.difficulty),
+            mastered: String(randomState.mastered),
+            starred: String(randomState.starred)
+        });
+        randomState.categoryIds.forEach(function (id) { params.append('categoryIds', id); });
+
+        try {
+            const result = await api('/bagu/random?' + params.toString());
+            if (result.code !== '0000') {
+                showToast(result.info || '抽题失败', true);
+                updateDrawButton();
+                return;
+            }
+            showRandomResult(result.data);
+        } catch (e) {
+            showToast('网络异常，请稍后重试', true);
+            updateDrawButton();
+        }
+    }
+
+    function showRandomResult(question) {
+        document.getElementById('randomCondition').hidden = true;
+        document.getElementById('randomResult').hidden = false;
+        document.getElementById('randomTitle').textContent = question.title;
+
+        const info = difficultyInfo(question.difficulty);
+        const starred = Number(question.starred) === 1;
+        const mastered = Number(question.mastered) === 1;
+        document.getElementById('randomMeta').innerHTML =
+            '<span class="tag cat">' + escapeHtml(categoryName(question.categoryId)) + '</span>' +
+            '<span class="tag ' + info[1] + '">' + info[0] + '</span>' +
+            '<span class="tag ' + (starred ? 'easy' : 'medium') + '">' + (starred ? '已收藏' : '未收藏') + '</span>' +
+            '<span class="tag ' + (mastered ? 'easy' : 'medium') + '">' + (mastered ? '已掌握' : '未掌握') + '</span>';
+
+        document.getElementById('randomAnswer').innerHTML =
+            (question.contentMd ? '<div class="desc">' + renderMarkdown(question.contentMd) + '</div>' : '') +
+            '<div>' + renderMarkdown(question.answerMd) + '</div>';
+
+        document.getElementById('randomDrawBtn').style.display = 'none';
+        document.getElementById('randomAgainBtn').style.display = '';
+        document.getElementById('randomBackBtn').style.display = '';
+    }
+
+    function bindSeg(id, field) {
+        const container = document.getElementById(id);
+        container.addEventListener('click', function (event) {
+            const button = event.target.closest('.seg-item');
+            if (!button) return;
+            container.querySelectorAll('.seg-item').forEach(function (item) {
+                item.classList.remove('active');
+            });
+            button.classList.add('active');
+            randomState[field] = Number(button.dataset.value);
+            loadRandomOptions();
+        });
+    }
+
+    bindSeg('difficultySeg', 'difficulty');
+    bindSeg('masteredSeg', 'mastered');
+    bindSeg('starredSeg', 'starred');
+
+    typeListEl.addEventListener('change', function (event) {
+        if (!event.target.matches('input[type="checkbox"]')) return;
+        const id = Number(event.target.value);
+        if (event.target.checked) {
+            randomState.categoryIds.add(id);
+        } else {
+            randomState.categoryIds.delete(id);
+        }
+        updateDrawButton();
+    });
+
+    document.getElementById('randomBtn').addEventListener('click', openRandom);
+    document.getElementById('randomCloseBtn').addEventListener('click', closeRandom);
+    document.getElementById('randomDrawBtn').addEventListener('click', drawRandom);
+    document.getElementById('randomAgainBtn').addEventListener('click', drawRandom);
+    document.getElementById('randomBackBtn').addEventListener('click', function () {
+        showRandomCondition();
+        loadRandomOptions();
+    });
+
     (async function init() {
+        keywordInput.value = state.keyword;
+        document.getElementById('filterStarred').checked = state.starred === 1;
+        document.getElementById('filterMastered').checked = state.mastered === 1;
+
+        // 题库页：显示分类栏，不显示随机抽题；收藏页：隐藏分类栏，显示随机抽题
+        if (isFavoritesPage) {
+            document.getElementById('chips').style.display = 'none';
+            document.getElementById('randomBtn').style.display = '';
+            document.getElementById('starredFilterWrap').style.display = 'none';
+        }
+
         await loadCategories();
         await loadMore();
     })();

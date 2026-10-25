@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - Java 八股</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 20px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+        }
+
+        .navbar .brand {
+            font-size: 17px;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .navbar .actions { display: flex; align-items: center; gap: 10px; }
+
+        .btn {
+            height: 34px;
+            padding: 0 14px;
+            font-size: 13px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: background .2s, color .2s;
+        }
+
+        .btn-plain { color: #4b5563; background: #fff; border-color: #d1d5db; }
+        .btn-plain:hover { background: #f9fafb; }
+
+        /* 右上角设置下拉 */
+        .dropdown { position: relative; }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+
+        .icon-btn:hover { color: #4f46e5; background: #f9fafb; }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 132px;
+            padding: 6px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            display: none;
+            z-index: 20;
+        }
+
+        .dropdown:hover .dropdown-menu,
+        .dropdown.open .dropdown-menu { display: block; }
+
+        .dropdown-menu a,
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 13px;
+            text-align: left;
+            color: #374151;
+            background: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu button:hover { background: #f3f4f6; color: #4f46e5; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 28px 16px 50px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 30px 24px 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .05);
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+        }
+
+        .nickname {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .username {
+            margin-top: 4px;
+            margin-bottom: 22px;
+            text-align: center;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .info-list { border-top: 1px solid #f3f4f6; }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 4px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+        }
+
+        .info-item .label { color: #6b7280; }
+        .info-item .value { color: #1f2937; }
+
+        .badge {
+            padding: 2px 10px;
+            font-size: 12px;
+            border-radius: 999px;
+        }
+
+        .badge.admin { color: #4f46e5; background: #eef2ff; }
+        .badge.user { color: #6b7280; background: #f3f4f6; }
+        .badge.normal { color: #059669; background: #ecfdf5; }
+        .badge.blocked { color: #dc2626; background: #fef2f2; }
+        .badge.deleted { color: #6b7280; background: #f3f4f6; }
+
+        .loading {
+            padding: 40px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translate(-50%, -80px);
+            z-index: 99;
+            padding: 11px 22px;
+            font-size: 14px;
+            color: #fff;
+            background: #ef4444;
+            border-radius: 8px;
+            opacity: 0;
+            transition: transform .3s, opacity .3s;
+            pointer-events: none;
+        }
+
+        .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+        @media (max-width: 480px) {
+            .navbar { padding: 0 14px; }
+            .card { padding: 24px 18px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a class="brand" href="/">Java 八股</a>
+    <div class="actions">
+        <a class="btn btn-plain" href="/">首页</a>
+        <a class="btn btn-plain" href="/bagu">题库</a>
+        <div class="dropdown" id="settingsDropdown">
+            <button class="icon-btn" id="settingsBtn" type="button" title="设置" aria-label="设置">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+            <div class="dropdown-menu">
+                <a href="/bagu?starred=1">我的收藏</a>
+                <a href="/profile">个人中心</a>
+                <button type="button" id="logoutBtn">退出登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div id="content">
+            <div class="loading">加载中...</div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    function escapeHtml(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function formatTime(value) {
+        return value ? String(value).replace('T', ' ').slice(0, 16) : '-';
+    }
+
+    function roleHtml(role) {
+        return Number(role) === 2
+            ? '<span class="badge admin">管理员</span>'
+            : '<span class="badge user">普通用户</span>';
+    }
+
+    function statusHtml(status) {
+        const map = {
+            0: '<span class="badge deleted">已删除</span>',
+            1: '<span class="badge normal">正常</span>',
+            2: '<span class="badge blocked">拉黑</span>'
+        };
+        return map[Number(status)] || '<span class="badge user">未知</span>';
+    }
+
+    function showToast(text) {
+        const toast = document.getElementById('toast');
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    }
+
+    // 设置下拉
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    document.getElementById('settingsBtn').addEventListener('click', function (event) {
+        event.stopPropagation();
+        settingsDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function () {
+        settingsDropdown.classList.remove('open');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async function () {
+        try {
+            await fetch('/login/logout', { method: 'POST' });
+        } catch (e) {
+            // ignore
+        }
+        localStorage.removeItem('token');
+        document.cookie = 'token=; path=/; max-age=0';
+        location.href = '/login';
+    });
+
+    (async function loadUser() {
+        try {
+            const resp = await fetch('/user/info');
+            const result = await resp.json();
+            if (result.code === '0005') {
+                location.href = '/login';
+                return;
+            }
+            if (result.code !== '0000' || !result.data) {
+                showToast(result.info || '加载失败');
+                document.getElementById('content').innerHTML = '<div class="loading">加载失败</div>';
+                return;
+            }
+
+            const user = result.data;
+            const name = user.nickname || user.username || '?';
+            document.getElementById('content').innerHTML =
+                '<div class="avatar">' + escapeHtml(name.slice(0, 1).toUpperCase()) + '</div>' +
+                '<div class="nickname">' + escapeHtml(name) + '</div>' +
+                '<div class="username">@' + escapeHtml(user.username) + '</div>' +
+                '<div class="info-list">' +
+                    '<div class="info-item"><span class="label">角色</span><span class="value">' + roleHtml(user.role) + '</span></div>' +
+                    '<div class="info-item"><span class="label">状态</span><span class="value">' + statusHtml(user.status) + '</span></div>' +
+                    '<div class="info-item"><span class="label">最后登录</span><span class="value">' + formatTime(user.lastLoginTime) + '</span></div>' +
+                    '<div class="info-item"><span class="label">注册时间</span><span class="value">' + formatTime(user.createTime) + '</span></div>' +
+                '</div>';
+        } catch (e) {
+            showToast('网络异常，请稍后重试');
+        }
+    })();
+</script>
+
+</body>
+</html>

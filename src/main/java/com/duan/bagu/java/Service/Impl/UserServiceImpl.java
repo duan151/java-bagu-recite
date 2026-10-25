@@ -31,6 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long id) {
+        return userMapper.selectById(id);
+    }
+
+    @Override
     public String createLoginToken(User user) {
         // UUID 去掉中划线作为 token
         String token = UUID.randomUUID().toString().replace("-", "");
@@ -45,5 +50,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeLoginToken(String token) {
         stringRedisTemplate.delete(LOGIN_TOKEN_KEY_PREFIX + token);
+    }
+
+    @Override
+    public void updatePassword(Long id, String encodedPassword) {
+        userMapper.updatePassword(id, encodedPassword);
     }
 }

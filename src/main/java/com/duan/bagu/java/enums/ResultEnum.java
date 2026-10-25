@@ -23,7 +23,9 @@ public enum ResultEnum {
     /** 未登录或登录已过期 */
     NOT_LOGIN("0005", "未登录或登录已过期"),
     /** 数据不存在 */
-    DATA_NOT_FOUND("0006", "数据不存在");
+    DATA_NOT_FOUND("0006", "数据不存在"),
+    /** 没有符合条件的题目 */
+    NO_QUESTION("0007", "没有符合条件的题目");
 
     /** 状态码 */
     private final String code;

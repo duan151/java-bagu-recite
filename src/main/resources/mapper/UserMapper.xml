@@ -87,4 +87,11 @@
         where id = #{id}
     </update>
 
+    <!-- 更新密码（BCrypt 密文） -->
+    <update id="updatePassword">
+        update `user`
+        set password = #{password}
+        where id = #{id}
+    </update>
+
 </mapper>

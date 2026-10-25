@@ -41,4 +41,9 @@ public interface UserMapper {
      * 更新状态：0删除 1正常 2拉黑
      */
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+
+    /**
+     * 更新密码（BCrypt 密文）
+     */
+    int updatePassword(@Param("id") Long id, @Param("password") String password);
 }

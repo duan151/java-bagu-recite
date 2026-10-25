@@ -32,4 +32,12 @@ public class PageController {
     public String bagu() {
         return "bagu";
     }
+
+    /**
+     * 个人中心
+     */
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }
